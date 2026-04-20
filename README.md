@@ -34,6 +34,7 @@ go run main.go
 * [x] **Fase 3:** Construir os vetores numéricos de similaridade na pasta `vectors`. *(Concluído)*
 * [x] **Fase 4:** Criar o mecanismo de Busca Semântica (Nearest Neighbor RAG) na pasta `search`. *(Concluído)*
 * [x] **Fase 5:** Implementar rede neural Multi-layer Perceptron e função ReLU no `neural`. *(Concluído)*
+* [x] **Fase 6:** Implementar mecanismo Self-Attention (QKV) dos Transformers na pasta `attention`. *(Concluído)*
 * [ ] ... (A evoluir durante a construção)
 
 ---
@@ -166,5 +167,35 @@ Nós instanciamos na RAM um cérebro de modelo `3x2` (A matriz de Input baseada 
 🤖>> O Reflexo matemático final da rede gerou os valores lógicos: [0.10532356049543087 0]
 
 (Observe que '0' indica que o cérebro freiou negativamente a dedução desse neurônio, a clássica ação do limitador de filtro ReLU!)
+==================================================
+```
+
+---
+
+### Fase 6: Transformers e o Mecanismo de Atenção (Concluído)
+
+Desbancamos completamente os neurônios isolados antigos da Fase 5 e finalmente pousamos no estado da arte: a arquitetura do "T" em ChatGPT, batizada de **Transformer** (*Attention is All You Need*, Google 2017) através do pacote `attention/`. Os cérebros antigos da engenharia liam uma palavra por vez e "esqueciam" rapidamente o contexto ao longo da frase. A maravilha desse mecanismo moderno se chama **Self-Attention**: ele permite matematicamente que todas as palavras de um parágrafo conversem entre si ao mesmo tempo em um *Multiplayer* estatístico.
+
+#### 👁️ Como funciona o Foco de Atenção Dimensional?
+Construímos a clássica camada de Atenção baseada na arquitetura QKV (Query, Key, Value). 
+* **Q (Query - "A Pergunta")**: Um vetor matemático que dita o que esta palavra está "caçando" de significados ao redor.
+* **K (Key - "A Chave")**: O vetor que cada palavra exibe ao mundo se descrevendo (ex: "Sou de Realeza").
+* **V (Value - "A Essência")**: O valor real que a palavra transmitirá se der 'Match' no QxK.
+* **Softmax**: Multiplicamos o $Q$ de uma palavra com o $K$ de todas as outras obtendo um 'Score Bruto'. Por fim passamos batido pela função `Softmax()`, que os espreme de modo que todas essas porcentagens conjuntas somem 1.0 (ou 100% da atenção daquela palavra).
+* Multiplicando esses percentuais pelo Valor em \$V, a palavra se reinventa baseando-se no contexto das conectadas!
+
+**🤖 Exemplo Visual Enriquecido:**
+Codificamos o input visual `[O(1) RATO(2) COMEU(3)]` gerando uma Matriz Q, K, e V genérica simples. Enviamos tudo ao maquinário e deixamos interagirem. O repasse das influências usando O Algoritmo modificou totalmente a matemática crua de cada palavra, injetando *Contexto Global* num vetor que antes era carente:
+
+```text
+==================================================
+========== FASE 6: ATTENTION (O SEGREDO) =========
+==================================================
+[TEMPO DE FLUXO] Multiplicando Querie com chaves (Q x K) e enxertando em todos os Valores...
+
+🤖>> Eis as Novas Representações das palavras depois que leram e compreenderam a frase inteira:
+Palavra 1 ganhou as propriedades de Sentido Mútuo: [0.59538253 0.72092349]
+Palavra 2 ganhou as propriedades de Sentido Mútuo: [0.53953825 0.77676777]
+Palavra 3 ganhou as propriedades de Sentido Mútuo: [0.61719882 0.77145400]
 ==================================================
 ```

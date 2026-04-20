@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"llm-do-zero/attention"
 	"llm-do-zero/markov"
 	"llm-do-zero/neural"
 	"llm-do-zero/search"
@@ -27,7 +28,7 @@ O rei de Roma vestiu outra roupa e esqueceu do rato e do queijo .
 	textoTesteP1 := "o rato e rainha"
 	arrayTesteP1 := tk.Encode(textoTesteP1)
 	fmt.Printf("[INFO] O Tokenizer analisou o texto bruto e criou %d tokens únicos vocabulário.\n", tk.GetVocabSize())
-	fmt.Printf("Decode de [%s]: %q (Note 'rainha' não visto no texto base virando <UNK>!)\n", textoTesteP1, tk.Decode(arrayTesteP1))
+	fmt.Printf("Decode de [%s]: %q\n", textoTesteP1, tk.Decode(arrayTesteP1))
 
 
 	fmt.Println("\n==================================================")
@@ -38,8 +39,7 @@ O rei de Roma vestiu outra roupa e esqueceu do rato e do queijo .
 	mk.Train(treinamentoNumeric)
 
 	sementeID := tk.Encode("o")[0]
-	IdsIA := mk.Generate(sementeID, 12)
-	fmt.Printf("[ALUCINAÇÃO DO AI]: 👉 %q\n", tk.Decode(IdsIA))
+	fmt.Printf("[ALUCINAÇÃO DO AI]: 👉 %q\n", tk.Decode(mk.Generate(sementeID, 12)))
 
 
 	fmt.Println("\n==================================================")
@@ -61,28 +61,54 @@ O rei de Roma vestiu outra roupa e esqueceu do rato e do queijo .
 	memoriaDimensional := map[string]vectors.Embedding{"Rei": vetorRei, "Rainha": vetorRainha, "Rato": vetorRato}
 	vetorMisterioso := vectors.Embedding{0.8, 0.85, 0.0}
 	
-	fmt.Printf("[PERGUNTA DA IA] Que palavra lembra os índices [0.8, 0.85, 0.0] do meu Input misterioso?\n")
 	melhorMatch, porcentagem, _ := search.NearestNeighbor(vetorMisterioso, memoriaDimensional)
-	fmt.Printf("🤖>> A palavra escolhida foi: '%s' (Bate %.2f%% da Similaridade Cosseno no mapa espacial)\n", melhorMatch, porcentagem*100)
+	fmt.Printf("🤖>> A palavra escolhida pro Mistério foi: '%s' (Semelhança Cosseno: %.2f%%)\n", melhorMatch, porcentagem*100)
 
 
 	fmt.Println("\n==================================================")
 	fmt.Println("========= FASE 5: REDE NEURAL (PERCEPTRON) =======")
 	fmt.Println("==================================================")
-	
-	// Vamos dar o Embedding do REI [0.9 0.9 0.1] para ela pensar o que fazer dele
 	inputCamada := []float64{0.9, 0.9, 0.1}
-
-	// Criamos a nossa primeira minúscula massa cinzenta
-	// Trata-se de uma "Camada Escondida" capaz de aceitar 3 números de Input por palavra
-	// E nós decidimos dar o tamanho físico a ela de APENAS 2 Neurônios pensatores (Output)
 	redeNeuralArtificial := neural.NewLayer(3, 2)
-
-	fmt.Printf("[INFO] Inputs brutos chegando no circuito de %d neurônios recém criados...\n", redeNeuralArtificial.Size)
-	
 	outputPensamento, _ := redeNeuralArtificial.Forward(inputCamada)
+	fmt.Printf("🤖>> O Reflexo matemático final da rede gerou: %v\n", outputPensamento)
+
+
+	fmt.Println("\n==================================================")
+	fmt.Println("========== FASE 6: ATTENTION (O SEGREDO) =========")
+	fmt.Println("==================================================")
 	
-	fmt.Printf("\n🤖>> O Reflexo matemático final da rede gerou os valores lógicos: %v\n", outputPensamento)
-	fmt.Println("\n(Observe que '0' indica que o cérebro freiou negativamente a dedução desse neurônio, a clássica ação do limitador de filtro ReLU!)")
+	// Faremos a Simulação do mecanismo de atenção focando apenas um universo minúsculo e visual 
+	// onde só temos 3 Palavras numa frase. (Ex: "O"(1), "RATO"(2), "COMEU"(3)). E só 2 traços espaciais de vetor.
+	
+	// Q (Query) - O que a palavra está procurando achar nas frases que estão do lado
+	queries := [][]float64{
+		{1.0, 0.0}, // Palavra 1 (Ex: O) percebendo algo
+		{0.0, 1.0}, // Palavra 2 (Ex: RATO) percebendo algo
+		{1.0, 1.0}, // Palavra 3 (Ex: COMEU) escaneando tudo
+	}
+	
+	// K (Keys)  - O segredo que a palavra "abre" pras vizinhas analisaram
+	keys := [][]float64{
+		{1.0, 0.1}, 
+		{0.1, 1.0}, 
+		{1.0, 1.0},
+	}
+	
+	// V (Values) - O significado puro daquela palavra passado finalmente adiante
+	values := [][]float64{
+		{0.5, 0.5},
+		{0.2, 0.8},
+		{0.9, 0.9},
+	}
+
+	fmt.Println("[TEMPO DE FLUXO] Multiplicando Querie com chaves (Q x K) e enxertando em todos os Valores...")
+	
+	resultadoDeContexto, _ := attention.SelfAttention(queries, keys, values)
+
+	fmt.Println("\n🤖>> Eis as Novas Representações das palavras depois que leram e compreenderam a frase inteira:")
+	for pos, conceitoAmpliado := range resultadoDeContexto {
+		fmt.Printf("Palavra %d ganhou as propriedades de Sentido Mútuo: %v\n", pos+1, conceitoAmpliado)
+	}
 	fmt.Println("==================================================")
 }
