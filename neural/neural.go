@@ -1,8 +1,10 @@
 package neural
 
 import (
+	"encoding/gob"
 	"errors"
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -55,17 +57,45 @@ func (l *Layer) Forward(inputs []float64) ([]float64, error) {
 
 	outputs := make([]float64, l.Size)
 	
-	// Pra cada neurônio isolado da nossa camada recém-nascida...
 	for i := 0; i < l.Size; i++ { 
 		var sum float64
-		// ...ele processa o pacote de dados do array
 		for j := 0; j < len(inputs); j++ {
-			// A ESSÊNCIA DA I.A AQUI: Acúmulo = soma de (Valor da Informação * Peso e Importância dela nesta Sinápse)
 			sum += inputs[j] * l.Weights[i][j]
 		}
-		// Finaliza a dedução: Soma o "Viés" base da rede e filtra ativando pelo ReLU!
 		outputs[i] = ReLU(sum + l.Biases[i])
 	}
 
 	return outputs, nil
+}
+
+// Save (O Checkpoint) pega o estado biológico digital atual (As matrizes de Weights aprendidos e Biases)
+// e compila/empacota como estático (arquivo '.bin') em disco. É a cópia exata comportamental dos arquivos .safetensors e .gguf.
+func (l *Layer) Save(filename string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Encoder embutido do Golang purifica as memórias pra bits crus muito leves.
+	encoder := gob.NewEncoder(file)
+	return encoder.Encode(l)
+}
+
+// LoadLayer pega o pacote misterioso e offline do seu HD (A alma da Inteligência Matemática) e injeta
+// reescrevendo ativamente a Inteligência Aleatória pro modo do gênio que você Treinou no dia anterior.
+func LoadLayer(filename string) (*Layer, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var camadaRessuscitada Layer
+	decoder := gob.NewDecoder(file)
+	
+	if err := decoder.Decode(&camadaRessuscitada); err != nil {
+		return nil, err
+	}
+	return &camadaRessuscitada, nil
 }

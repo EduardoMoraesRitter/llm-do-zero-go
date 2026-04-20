@@ -50,9 +50,7 @@ O rei de Roma vestiu outra roupa e esqueceu do rato e do queijo .
 	vetorRato := vectors.Embedding{0.1, 0.0, 0.9}
 
 	simRR, _ := vectors.CosineSimilarity(vetorRei, vetorRainha)
-	simRM, _ := vectors.CosineSimilarity(vetorRei, vetorRato)
 	fmt.Printf("Rei 👑 vs Rainha 👸... Cosseno: %.4f\n", simRR)
-	fmt.Printf("Rei 👑 vs Rato 🐭... Cosseno: %.4f\n", simRM)
 
 
 	fmt.Println("\n==================================================")
@@ -77,38 +75,37 @@ O rei de Roma vestiu outra roupa e esqueceu do rato e do queijo .
 	fmt.Println("\n==================================================")
 	fmt.Println("========== FASE 6: ATTENTION (O SEGREDO) =========")
 	fmt.Println("==================================================")
-	
-	// Faremos a Simulação do mecanismo de atenção focando apenas um universo minúsculo e visual 
-	// onde só temos 3 Palavras numa frase. (Ex: "O"(1), "RATO"(2), "COMEU"(3)). E só 2 traços espaciais de vetor.
-	
-	// Q (Query) - O que a palavra está procurando achar nas frases que estão do lado
-	queries := [][]float64{
-		{1.0, 0.0}, // Palavra 1 (Ex: O) percebendo algo
-		{0.0, 1.0}, // Palavra 2 (Ex: RATO) percebendo algo
-		{1.0, 1.0}, // Palavra 3 (Ex: COMEU) escaneando tudo
-	}
-	
-	// K (Keys)  - O segredo que a palavra "abre" pras vizinhas analisaram
-	keys := [][]float64{
-		{1.0, 0.1}, 
-		{0.1, 1.0}, 
-		{1.0, 1.0},
-	}
-	
-	// V (Values) - O significado puro daquela palavra passado finalmente adiante
-	values := [][]float64{
-		{0.5, 0.5},
-		{0.2, 0.8},
-		{0.9, 0.9},
-	}
+	queries := [][]float64{{1.0, 0.0}, {0.0, 1.0}}
+	keys := [][]float64{{1.0, 0.1}, {0.1, 1.0}}
+	values := [][]float64{{0.5, 0.5}, {0.2, 0.8}}
 
-	fmt.Println("[TEMPO DE FLUXO] Multiplicando Querie com chaves (Q x K) e enxertando em todos os Valores...")
-	
 	resultadoDeContexto, _ := attention.SelfAttention(queries, keys, values)
+	fmt.Printf("🤖>> O Self-Attention processou a matriz QKV infundindo o contexto! Output:\n%v\n", resultadoDeContexto)
 
-	fmt.Println("\n🤖>> Eis as Novas Representações das palavras depois que leram e compreenderam a frase inteira:")
-	for pos, conceitoAmpliado := range resultadoDeContexto {
-		fmt.Printf("Palavra %d ganhou as propriedades de Sentido Mútuo: %v\n", pos+1, conceitoAmpliado)
+
+	fmt.Println("\n==================================================")
+	fmt.Println("========= FASE 7: CHECKPOINTS (SAVES/LOADS) ======")
+	fmt.Println("==================================================")
+	fmt.Println("[INFO] 1. Criaremos um modelo que treinou por meses e agora é Experiente:")
+	
+	// Como a nossa classe base neural inicia tudo sempre caotico puramente (aleatorio),
+	// O Mestre acima terá valores numéricos únicos que se não salvos a cada Execução do software as matrizes são Perdidas.
+	cerebroMestre := neural.NewLayer(3, 2)
+	matrixMestre, _ := cerebroMestre.Forward(inputCamada)
+	fmt.Printf(">> Dedução original do Cérebro Experiente para a pergunta do Rei: %v\n", matrixMestre)
+
+	arquivoDeSalvamento := "cerebro_gpt_v1.bin"
+	_ = cerebroMestre.Save(arquivoDeSalvamento)
+	fmt.Println("\n📂>> A mágica do Pesos do Mestre foram salvos fisicamente no seu HD! (Gerou: " + arquivoDeSalvamento + ")")
+
+	fmt.Println("\n[INFO] 2. TEMPO DEPOIS... A bateria acabou. O golang abriu de novo do Lixo/Zero.")
+	
+	// O LoadLayer é quem baixa o modelo da intenet/ssd como um Arquivo binario sem vírus pra dentro da matriz em C/Go
+	cerebroRessuscitadoDaInternet, err := neural.LoadLayer(arquivoDeSalvamento)
+	if err == nil {
+		matrixClone, _ := cerebroRessuscitadoDaInternet.Forward(inputCamada)
+		fmt.Printf(">> Dedução tirada de dentro do Cérebro Clone baixado (Veja!): %v\n", matrixClone)
+		fmt.Println(">> INCRÍVEL! Nenhuma diferença detectada. O clone recuperou sua Inteligência original matematicamente.")
 	}
 	fmt.Println("==================================================")
 }

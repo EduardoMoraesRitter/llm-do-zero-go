@@ -35,6 +35,7 @@ go run main.go
 * [x] **Fase 4:** Criar o mecanismo de Busca Semântica (Nearest Neighbor RAG) na pasta `search`. *(Concluído)*
 * [x] **Fase 5:** Implementar rede neural Multi-layer Perceptron e função ReLU no `neural`. *(Concluído)*
 * [x] **Fase 6:** Implementar mecanismo Self-Attention (QKV) dos Transformers na pasta `attention`. *(Concluído)*
+* [x] **Fase 7:** Desenvolver arquitetura de Checkpoints (Persistência / Save & Load) nativa matemática em binário. *(Concluído)*
 * [ ] ... (A evoluir durante a construção)
 
 ---
@@ -151,6 +152,7 @@ Simulamos na classe `main.go` um "vetor de pergunta virtual" sobre um novo indiv
 Na Fase 5 entramos na ponta de lança da Inteligência Artificial em seu escopo de *Deep Learning* no pacote `neural/`. Criamos não um dedutor estático baseado no passado como em *Markov*, mas sim o primeiro mecanismo matemático livre copiado da biologia humana para dentro do Golang: A rede neural multicamadas de conectores **Linear / Perceptron**.
 
 #### 🧠 A Anatomia do nosso Cérebro
+
 * **A Camada Nervosa (Layer)**: Programamos uma construtora de redes neurais do zero. Ao chamar o `NewLayer()`, o computador gera sinapses falsas na base do `rand.Float`. Inserindo números "caóticos" num cérebro virtual não treinado.
 * **Os Pesos (Weights) e o Viés (Bias)**: A forma com a qual o neurônio lê a inteligência matemática recebida é através da fórmula de Multiplicação de Matriz. Cada input (palavra) será multiplicado pelo Peso, e compensado pelo Viés. É assim que o neurônio atribui "grau de importância" a uma palavra numa frase.
 * **O Filtro ReLU (Rectified Linear Unit)**: O fiel escudeiro que impede a máquina de gerar alucinações quebradas e negativas. Injetamos o ReLU de modo que se uma dedução matemática de um neurônio acabar negativa, o ReLU bloqueia imediatamente o processo gerando um sólido `0`.
@@ -177,7 +179,9 @@ Nós instanciamos na RAM um cérebro de modelo `3x2` (A matriz de Input baseada 
 Desbancamos completamente os neurônios isolados antigos da Fase 5 e finalmente pousamos no estado da arte: a arquitetura do "T" em ChatGPT, batizada de **Transformer** (*Attention is All You Need*, Google 2017) através do pacote `attention/`. Os cérebros antigos da engenharia liam uma palavra por vez e "esqueciam" rapidamente o contexto ao longo da frase. A maravilha desse mecanismo moderno se chama **Self-Attention**: ele permite matematicamente que todas as palavras de um parágrafo conversem entre si ao mesmo tempo em um *Multiplayer* estatístico.
 
 #### 👁️ Como funciona o Foco de Atenção Dimensional?
-Construímos a clássica camada de Atenção baseada na arquitetura QKV (Query, Key, Value). 
+
+Construímos a clássica camada de Atenção baseada na arquitetura QKV (Query, Key, Value).
+
 * **Q (Query - "A Pergunta")**: Um vetor matemático que dita o que esta palavra está "caçando" de significados ao redor.
 * **K (Key - "A Chave")**: O vetor que cada palavra exibe ao mundo se descrevendo (ex: "Sou de Realeza").
 * **V (Value - "A Essência")**: O valor real que a palavra transmitirá se der 'Match' no QxK.
@@ -197,5 +201,38 @@ Codificamos o input visual `[O(1) RATO(2) COMEU(3)]` gerando uma Matriz Q, K, e 
 Palavra 1 ganhou as propriedades de Sentido Mútuo: [0.59538253 0.72092349]
 Palavra 2 ganhou as propriedades de Sentido Mútuo: [0.53953825 0.77676777]
 Palavra 3 ganhou as propriedades de Sentido Mútuo: [0.61719882 0.77145400]
+==================================================
+```
+
+---
+
+### Fase 7: Imortalidade / Checkpointing (Concluído)
+
+De nada adianta uma Inteligência Artificial passar meses treinando neurônios e calibrando o *Softmax*, se ao perder energia do disco flexível e do computador a memória RAM descartar as matrizes estocásticas e voltarmos a "Cérebros Recém-Nascidos".
+Para isso, no final do processo, incluímos o `Save()` e o `LoadLayer()` injetados direto nos neurônios principais pra criar os sagrados *Arquivos de Checkpoint* (Como os colossais `.safetensors` ou `.gguf` que usamos em IAs pesadas da internet de mundo real).
+
+#### 💾 Persistência com GOB (`encoding/gob`)
+
+Em vez de envolver dependências terceiras em C++, decodificamos tudo usando ferramentas primitivas da biblioteca principal da linguagem *Golang*:
+
+1. Transformamos o cérebro físico que acabou de treinar na RAM em puros blocos de Bits seriais.
+2. Expulsamos o processamento para um arquivo de salvamento no seu HD/SSD, batizado de `cerebro_gpt_v1.bin`.
+3. Simulamos a morte da memória. Na invocação de `Load()`, mostramos a linguagem extraindo o conteúdo exato do lixo de bytes antigo para reviver uma nova Matriz Go estruturada reescrevendo sem os problemas de pseudo rands.
+
+**🤖 Exemplo Visual da Transferência Física de Inteligência:**
+Criamos uma I.A Experiente de fase 5 que gerou o multiplicador 0 e 0.1167 usando as bases aleatóricas secretas recém dadas. Empacotamos ela no disco e criamos uma "Clone Vazia" no dia seguinte lendo o arquivo `.bin` e testando a exata mesma pegunta. Como esperado do Golang: a precisão decimal não sofreu ranhuras, os *Pesos* foram imortalizados!
+
+```text
+==================================================
+========= FASE 7: CHECKPOINTS (SAVES/LOADS) ======
+==================================================
+[INFO] 1. Criaremos um modelo que treinou por meses e agora é Experiente:
+>> Dedução original do Cérebro Experiente para a pergunta do Rei: [0 0.11672555469902976]
+
+📂>> A mágica do Pesos do Mestre foram salvos fisicamente no seu HD! (Gerou: cerebro_gpt_v1.bin)
+
+[INFO] 2. TEMPO DEPOIS... A bateria acabou. O golang abriu de novo do Lixo/Zero.
+>> Dedução tirada de dentro do Cérebro Clone baixado (Veja!): [0 0.11672555469902976]
+>> INCRÍVEL! Nenhuma diferença detectada. O clone recuperou sua Inteligência original matematicamente.
 ==================================================
 ```
