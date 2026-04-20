@@ -16,6 +16,7 @@ Para melhor aprendizado, a arquitetura foi dividida em diferentes pacotes que re
 ## 🛠️ Como Executar
 
 **Pré-requisitos gerais:**
+
 * [Go (Golang)](https://go.dev/) devidamente instalado na máquina.
 
 **Passo a Passo:**
@@ -27,22 +28,26 @@ go run main.go
 ```
 
 ## 🎯 Próximos Passos
-- [x] **Fase 1:** Implementar o *Tokenizer* focado em RegEx (ignorando maiúsculas e modelando pontuações). *(Concluído)*
-- [ ] **Fase 2:** Construir o primeiro modelo gerador básico na pasta `markov`.
-- [ ] **Fase 3:** Construir os vetores numéricos de similaridade na pasta `vectors`.
-- [ ] ... (A evoluir durante a construção)
+
+* [x] **Fase 1:** Implementar o *Tokenizer* focado em RegEx (ignorando maiúsculas e modelando pontuações). *(Concluído)*
+* [x] **Fase 2:** Construir o primeiro modelo gerador básico na pasta `markov`. *(Concluído)*
+* [ ] **Fase 3:** Construir os vetores numéricos de similaridade na pasta `vectors`.
+* [ ] ... (A evoluir durante a construção)
 
 ---
 
 ## 🏁 Histórico de Progresso
 
 ### Fase 1: O Módulo Tokenizer (Concluído)
+
 Criamos um sistema avançado de geração de vocabulário no pacote `tokenizer/`. Ele é capaz de ler textos de treinamento, separar e compreender individualmente as palavras e até as pontuações de forma independente usando Expressões Regulares (`RegEx` via `\p{L}`). Ignorando a diferença entre maiúsculas e minúsculas, nosso Tokenizer distribui identificadores numéricos e executa 3 passos centrais da Inteligência Artificial:
+
 * **Fit (Treino)**: Aprende e varre os textos base, construindo um dicionário unificado (uma palavra = um ID `int`).
 * **Encode**: Traduz textos humanos para o modelo matriz matemático `[]int`. Palavras não vistas no treino são batizadas inteligentemente com `ID -1`.
 * **Decode**: Executa o reverso. Traduz a matriz lógica novamente para frases normais legíveis. Palavras desconhecidas na matriz que possuíam peso -1 se tornam `<UNK>` (Unknown).
 
 **🤖 Exemplo de Processamento:**
+
 ```text
 === 🚀 Testando o Tokenizer (Versão com Expressões Regulares) ===
 Texto de Treino:
@@ -56,4 +61,34 @@ Matriz gerada: [0 6 9 3 -1 -1 3 -1 13]
 
 --- Decodificando Texto (Decode) ---
 Resultado: "o rei , a <UNK> <UNK> a <UNK> !"
+```
+
+---
+
+### Fase 2: O Motor de Geração (Cadeias de Markov) (Concluído)
+
+Integrado logicamente no módulo `markov/`, nosso modelo atua como o primeiro cérebro gerador do projeto. Sem precisar de pesadas redes neurais, ele aprende as transições estatísticas matemáticas enviadas pelo Tokenizer para formular frases próprias "inéditas" baseado pesadamente nas probabilidades de continuação de palavras!
+
+#### 🕵️ O que são as Cadeias de Markov?
+
+* **A Origem do Nome**: Coroa o genial matemático russo **Andrey Markov**.
+* **Quando foi criado?**: O conceito (*Markov Chains*) foi provado pela primeira vez em 1906, pasme, quase meia década antes das estruturas computacionais modernas.
+* **O que é?**: Trata-se de um modelo estocástico que descreve uma sequência de eventos possíveis onde a probabilidade da ocorrência do "próximo estado" (Ex: a próxima palavra gerada no texto) **depende única e exclusivamente do estado presente**, desprezando as palavras extremamente antigas geradas na frase.
+* **Para que serviu na História e neste LLM?**: É o tataravô da previsão temporal. Usado largamente na biologia, nas bolsas de valores e na computação, Markov foi a baseline de sistemas de processamento de linguagens antigas (como os teclados que tentavam prever a próxima palavra da sua mensagem SMS no início dos anos 2000). A máquina memoriza todas as vezes que a palavra "A" é sucedida por "B" ou "C" e lança dados ponderados (no caso do golang, com `rand` com *seeding* temporal) para prever o que o seu robô te responderá!
+
+**🎲 Exemplo de "Alucinação" da Máquina na Fase 2:**
+
+Pedimos para ela iniciar uma frase obrigada a utilizar o ID `0` (Letra *O*)... E em seguida o algoritmo usou estatística pura, conectando as saídas prováveis matematicamente num *array* limpo até montar uma frase assustadoramente parecida com coerência humana:
+
+```text
+=== 🚀 Fase 2: Motor de Previsão de Texto (Markov) ===
+[Tokenizer] Vocabulário Base absorvido: 30 identificadores numéricos criados.
+[Markov]    Padrões e probabilidades cruzadas extraídas com sucesso.
+
+--- 🤖 IA Gerando Frases Inéditas ---
+A IA calculou esta matriz de sequência temporal:
+[0 1 25 0 1 28 5 6 9 0 1 2 3 4 5]
+
+Tradução final repassada aos humanos (Decode):
+👉 "o rato ! o rato e do rei , o rato roeu a roupa do"
 ```

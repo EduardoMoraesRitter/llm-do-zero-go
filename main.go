@@ -2,33 +2,58 @@ package main
 
 import (
 	"fmt"
+	"llm-do-zero/markov"
 	"llm-do-zero/tokenizer"
 )
 
 func main() {
-	fmt.Println("=== 🚀 Testando o Tokenizer (Versão com Expressões Regulares) ===")
+	fmt.Println("=== 🚀 Fase 2: Motor de Previsão de Texto (Markov) ===")
 
-	textoTreino := "O rato roeu a roupa do rei de Roma, mas não roeu o relógio!"
-	fmt.Printf("Texto de Treino:\n%q\n\n", textoTreino)
+	// Texto grande para dar algum "repertório" estatístico à IA
+	textoTreino := `
+O rato roeu a roupa do rei de Roma, mas não roeu o relógio . 
+O rei zangado mandou o rato para o reino distante .
+Longe do rei, o rato roeu muito queijo .
+O queijo era bom demais para o rato !
+O rei de Roma vestiu outra roupa e esqueceu do rato e do queijo .
+	`
 
-	// 1. Inicializa e Constroi Vocabulário
+	// ==========================================
+	// 1. FASE DE TOKENIZATION (Compreensão Numérica)
+	// ==========================================
 	tk := tokenizer.New()
 	tk.Fit(textoTreino)
 
-	fmt.Printf("Vocabulário gerado: %d tokens únicos criados.\n", tk.GetVocabSize())
+	fmt.Printf("[Tokenizer] Vocabulário Base absorvido: %d identificadores numéricos criados.\n", tk.GetVocabSize())
 
-	// 2. Testando o Encode
-	// Note o uso de pontuação e maiúsculas misturadas - ele agora lida com tudo inteligentemente.
-	textoTeste := "O rei, a rainha e a coroa!"
+	// Convertemos o texto de aprendizado para Matriz de Inteiros:
+	treinamentoNumeric := tk.Encode(textoTreino)
 
-	fmt.Printf("\n--- Codificando Texto (Encode) ---\n")
-	fmt.Printf("Texto de Teste: %q\n", textoTeste)
+	// ==========================================
+	// 2. FASE MARKOV (Pesos Probabilísticos)
+	// ==========================================
+	mk := markov.New()
+	mk.Train(treinamentoNumeric)
+	fmt.Println("[Markov]    Padrões e probabilidades cruzadas extraídas com sucesso.")
 
-	codificado := tk.Encode(textoTeste)
-	fmt.Printf("Matriz gerada: %v\n", codificado)
+	// ==========================================
+	// 3. FASE DE INFERÊNCIA (Gerando texto novo)
+	// ==========================================
+	fmt.Println("\n--- 🤖 IA Gerando Frases Inéditas ---")
 
-	// 3. Testando o Decode
-	fmt.Printf("\n--- Decodificando Texto (Decode) ---\n")
-	decodificado := tk.Decode(codificado)
-	fmt.Printf("Resultado: %q\n", decodificado)
+	// Escolhemos uma Semente com a qual ela será forçada a iniciar a frase (ex: "o")
+	palavraSemente := "o"
+	sementeID := tk.Encode(palavraSemente)[0]
+
+	// Pede ao motor para tentar achar as próximas 15 palavras prováveis em sequência
+	IdsIA := mk.Generate(sementeID, 15)
+
+	// O formato é puramente numérico (A linguagem que a IA pensa)
+	fmt.Printf("A IA calculou esta matriz:\n%v\n\n", IdsIA)
+
+	// O processo Reverso pra traduzir aos humanos (Decode)
+	fraseMágica := tk.Decode(IdsIA)
+	
+	fmt.Printf("Tradução ao humano:\n👉 %q\n", fraseMágica)
+	fmt.Println("\n(Se você rodar o 'go run main.go' dezenas de vezes, ela construirá frases diferentes dadas as probabilidades bifurcadas!).")
 }
