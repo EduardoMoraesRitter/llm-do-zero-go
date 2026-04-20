@@ -32,6 +32,7 @@ go run main.go
 * [x] **Fase 1:** Implementar o *Tokenizer* focado em RegEx (ignorando maiúsculas e modelando pontuações). *(Concluído)*
 * [x] **Fase 2:** Construir o primeiro modelo gerador básico na pasta `markov`. *(Concluído)*
 * [x] **Fase 3:** Construir os vetores numéricos de similaridade na pasta `vectors`. *(Concluído)*
+* [x] **Fase 4:** Criar o mecanismo de Busca Semântica (Nearest Neighbor RAG) na pasta `search`. *(Concluído)*
 * [ ] ... (A evoluir durante a construção)
 
 ---
@@ -113,4 +114,28 @@ Testando familiaridade semântica matemática entre 'Rei' 👑 e 'Rainha' 👸..
 
 Testando familiaridade semântica matemática entre 'Rei' 👑 e 'Rato' 🐭...
 >> Grau de Similaridade: 0.155694 (Próximo ou Menor que 0.0 significa que não compartilham quase nenhum sentido)
+```
+
+---
+
+### Fase 4: O Mecanismo de Busca / Retrieval (Concluído)
+
+De posse das nossas matrizes matemáticas no espaço e da nossa fórmula de similaridade (Fase 3), precisávamos apenas da inteligência central interligadora do pacote `search/`. Entra em cena a varredura do modelo `NearestNeighbor` (Busca pelo Vizinho Mais Próximo).
+
+#### 🎯 Como o Search funciona?
+* Em arquiteturas empresariais modernas como as famosas **RAGs** (*Retrieval-Augmented Generation*), antes de a IA tentar redigir um parágrafo pra você fingindo que sabe o assunto, ela primeiro varre seus arquivos PDF ou planilhas procurando vetores "próximos" da sua pergunta para usar de embasamento na geração.
+* Neste módulo construímos uma busca vetorial de varredura (*Linear Scan*). Nossa função recebe um array multidimensional misterioso de entrada (a pergunta convertida) e joga ela contra toda a memória da IA avaliando quem responde à *Similaridade de Cosseno*.
+
+**🤖 Exemplo Mocado de Retorno Vizinho Mais Próximo:**
+Simulamos na classe `main.go` um "vetor de pergunta virtual" sobre um novo indivíduo na realeza de alta riqueza, que seria um Príncipe. Ao pedir para ela comparar com a memória atual (Rei, Rainha e Rato), vemos o algoritmo não fazer deduções gramaticais, mas sim matemáticas espaciais absolutas para eleger o vencedor:
+
+```text
+==================================================
+========= FASE 4: BUSCA SEMÂNTICA (SEARCH) =======
+==================================================
+[INFO] Consultando a Base Vectorial: [Rei, Rainha, Rato]
+[PERGUNTA DA IA] Qual palavra no meu cérebro matemático melhor se encaixa neste vetor misterioso (Alto Poder Real)?
+
+🤖>> Resposta Final: A palavra que mais faz sentido é a 'Rainha' (Semelhança Cosseno: 99.95%)
+==================================================
 ```
