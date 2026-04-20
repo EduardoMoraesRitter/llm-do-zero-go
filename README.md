@@ -33,6 +33,7 @@ go run main.go
 * [x] **Fase 2:** Construir o primeiro modelo gerador básico na pasta `markov`. *(Concluído)*
 * [x] **Fase 3:** Construir os vetores numéricos de similaridade na pasta `vectors`. *(Concluído)*
 * [x] **Fase 4:** Criar o mecanismo de Busca Semântica (Nearest Neighbor RAG) na pasta `search`. *(Concluído)*
+* [x] **Fase 5:** Implementar rede neural Multi-layer Perceptron e função ReLU no `neural`. *(Concluído)*
 * [ ] ... (A evoluir durante a construção)
 
 ---
@@ -101,7 +102,8 @@ Tradução final repassada aos humanos (Decode):
 Deixamos o mundo isolado da Fase 1 para trás e entramos no campo contínuo das abstrações dimensionais (Álgebra Linear) no módulo `vectors/`. Num Large Language Model (LLM) da atualidade, é exatamente através deste módulo matemático que a IA entende os traços implícitos da linguagem humana sabendo sem você explicar, que "Filho" e "Ententeado" estão no campo parental.
 
 #### 📐 A Matemática dos Embeddings e o "Cosseno"
-* **Word Embeddings**: Diferente das Strings nativas ou ID's cegos, cada token na Fase 3 se transforma em um "Ponteiro Gráfico Multidimensional" (Array puro em `float64`). 
+
+* **Word Embeddings**: Diferente das Strings nativas ou ID's cegos, cada token na Fase 3 se transforma em um "Ponteiro Gráfico Multidimensional" (Array puro em `float64`).
 * **Cosign Similarity (Similaridade do Cosseno)**: Implementamos o sagrado algorítmo por trás dos mecanismos de busca de vetores da atualidade. A matemática avalia a angulação escalar entre dois vetores. Se dois vetores (palavras) fluem na exata mesma direção semântica/contextual da frase, eles têm máxima similaridade (Perto de `1.0`). Se dão em ângulos obtusos ou opostos, variam para nulo (`0.0`) ou extremos paradoxos/antônimos (`-1.0`).
 
 **🤖 Exemplo Prático:**
@@ -123,6 +125,7 @@ Testando familiaridade semântica matemática entre 'Rei' 👑 e 'Rato' 🐭...
 De posse das nossas matrizes matemáticas no espaço e da nossa fórmula de similaridade (Fase 3), precisávamos apenas da inteligência central interligadora do pacote `search/`. Entra em cena a varredura do modelo `NearestNeighbor` (Busca pelo Vizinho Mais Próximo).
 
 #### 🎯 Como o Search funciona?
+
 * Em arquiteturas empresariais modernas como as famosas **RAGs** (*Retrieval-Augmented Generation*), antes de a IA tentar redigir um parágrafo pra você fingindo que sabe o assunto, ela primeiro varre seus arquivos PDF ou planilhas procurando vetores "próximos" da sua pergunta para usar de embasamento na geração.
 * Neste módulo construímos uma busca vetorial de varredura (*Linear Scan*). Nossa função recebe um array multidimensional misterioso de entrada (a pergunta convertida) e joga ela contra toda a memória da IA avaliando quem responde à *Similaridade de Cosseno*.
 
@@ -137,5 +140,31 @@ Simulamos na classe `main.go` um "vetor de pergunta virtual" sobre um novo indiv
 [PERGUNTA DA IA] Qual palavra no meu cérebro matemático melhor se encaixa neste vetor misterioso (Alto Poder Real)?
 
 🤖>> Resposta Final: A palavra que mais faz sentido é a 'Rainha' (Semelhança Cosseno: 99.95%)
+==================================================
+```
+
+---
+
+### Fase 5: Redes Neurais Biológicas (Perceptron) (Concluído)
+
+Na Fase 5 entramos na ponta de lança da Inteligência Artificial em seu escopo de *Deep Learning* no pacote `neural/`. Criamos não um dedutor estático baseado no passado como em *Markov*, mas sim o primeiro mecanismo matemático livre copiado da biologia humana para dentro do Golang: A rede neural multicamadas de conectores **Linear / Perceptron**.
+
+#### 🧠 A Anatomia do nosso Cérebro
+* **A Camada Nervosa (Layer)**: Programamos uma construtora de redes neurais do zero. Ao chamar o `NewLayer()`, o computador gera sinapses falsas na base do `rand.Float`. Inserindo números "caóticos" num cérebro virtual não treinado.
+* **Os Pesos (Weights) e o Viés (Bias)**: A forma com a qual o neurônio lê a inteligência matemática recebida é através da fórmula de Multiplicação de Matriz. Cada input (palavra) será multiplicado pelo Peso, e compensado pelo Viés. É assim que o neurônio atribui "grau de importância" a uma palavra numa frase.
+* **O Filtro ReLU (Rectified Linear Unit)**: O fiel escudeiro que impede a máquina de gerar alucinações quebradas e negativas. Injetamos o ReLU de modo que se uma dedução matemática de um neurônio acabar negativa, o ReLU bloqueia imediatamente o processo gerando um sólido `0`.
+
+**🤖 Exemplo Visual da Massa Cinzenta Funcionando:**
+Nós instanciamos na RAM um cérebro de modelo `3x2` (A matriz de Input baseada no nosso Embedding 3D, e o cérebro composto por 2 Neurônios reflexos). Veja como cada um dos neurônios lidou diferentemente com a informação:
+
+```text
+==================================================
+========= FASE 5: REDE NEURAL (PERCEPTRON) =======
+==================================================
+[INFO] Inputs brutos chegando no circuito de 2 neurônios recém criados...
+
+🤖>> O Reflexo matemático final da rede gerou os valores lógicos: [0.10532356049543087 0]
+
+(Observe que '0' indica que o cérebro freiou negativamente a dedução desse neurônio, a clássica ação do limitador de filtro ReLU!)
 ==================================================
 ```
