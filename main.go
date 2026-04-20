@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"llm-do-zero/markov"
 	"llm-do-zero/tokenizer"
+	"llm-do-zero/vectors"
 )
 
 func main() {
-	fmt.Println("=== 🚀 Fase 2: Motor de Previsão de Texto (Markov) ===")
-
-	// Texto grande para dar algum "repertório" estatístico à IA
+	fmt.Println("============ FASE 2: PREVISÃO (MARKOV) ============")
 	textoTreino := `
 O rato roeu a roupa do rei de Roma, mas não roeu o relógio . 
 O rei zangado mandou o rato para o reino distante .
@@ -18,42 +17,43 @@ O queijo era bom demais para o rato !
 O rei de Roma vestiu outra roupa e esqueceu do rato e do queijo .
 	`
 
-	// ==========================================
-	// 1. FASE DE TOKENIZATION (Compreensão Numérica)
-	// ==========================================
 	tk := tokenizer.New()
 	tk.Fit(textoTreino)
-
-	fmt.Printf("[Tokenizer] Vocabulário Base absorvido: %d identificadores numéricos criados.\n", tk.GetVocabSize())
-
-	// Convertemos o texto de aprendizado para Matriz de Inteiros:
 	treinamentoNumeric := tk.Encode(textoTreino)
 
-	// ==========================================
-	// 2. FASE MARKOV (Pesos Probabilísticos)
-	// ==========================================
 	mk := markov.New()
 	mk.Train(treinamentoNumeric)
-	fmt.Println("[Markov]    Padrões e probabilidades cruzadas extraídas com sucesso.")
 
-	// ==========================================
-	// 3. FASE DE INFERÊNCIA (Gerando texto novo)
-	// ==========================================
-	fmt.Println("\n--- 🤖 IA Gerando Frases Inéditas ---")
-
-	// Escolhemos uma Semente com a qual ela será forçada a iniciar a frase (ex: "o")
 	palavraSemente := "o"
 	sementeID := tk.Encode(palavraSemente)[0]
 
-	// Pede ao motor para tentar achar as próximas 15 palavras prováveis em sequência
-	IdsIA := mk.Generate(sementeID, 15)
-
-	// O formato é puramente numérico (A linguagem que a IA pensa)
-	fmt.Printf("A IA calculou esta matriz:\n%v\n\n", IdsIA)
-
-	// O processo Reverso pra traduzir aos humanos (Decode)
+	IdsIA := mk.Generate(sementeID, 12)
 	fraseMágica := tk.Decode(IdsIA)
 	
-	fmt.Printf("Tradução ao humano:\n👉 %q\n", fraseMágica)
-	fmt.Println("\n(Se você rodar o 'go run main.go' dezenas de vezes, ela construirá frases diferentes dadas as probabilidades bifurcadas!).")
+	fmt.Printf("Tradução ao humano da Cadeia (Seed = 'o'): 👉 %q\n", fraseMágica)
+
+
+	fmt.Println("\n\n============ FASE 3: SIMILARIDADE SEMÂNTICA (VECTORES) ============")
+	
+	// Num projeto real, esses super-arrays decimais seriam preenchidos automaticamente
+	// pela rede neural em tempo real após mastigar a Wikipédia inteira, agrupando
+	// as coisas no plano dimensional. Aqui estamos "mockando" (forçando na mão) o cérebro
+	// do LLM pra entender o peso tridimensional de "poder/riqueza", "realeza" e "roedor".
+	
+	// Rei = Rico (0.9), Realeza Absoluta (0.9), Nivel Roedor Mínimo (0.1)
+	vetorRei := vectors.Embedding{0.9, 0.9, 0.1}
+	
+	// Rainha = Rica (0.9), Realeza Absoluta (0.9), Nivel Roedor Mínimo (0.0)
+	vetorRainha := vectors.Embedding{0.9, 0.9, 0.0}
+	
+	// Rato = Pouco rico (0.1), Zero realeza (0.0), Alto nível de Roedor (0.9)
+	vetorRato := vectors.Embedding{0.1, 0.0, 0.9}
+
+	fmt.Println("Testando familiaridade semântica matemática entre 'Rei' 👑 e 'Rainha' 👸...")
+	simRR, _ := vectors.CosineSimilarity(vetorRei, vetorRainha)
+	fmt.Printf(">> Grau de Similaridade: %f (Próximo de 1.0 é extremo parentesco semântico!)\n", simRR)
+
+	fmt.Println("\nTestando familiaridade semântica matemática entre 'Rei' 👑 e 'Rato' 🐭...")
+	simRM, _ := vectors.CosineSimilarity(vetorRei, vetorRato)
+	fmt.Printf(">> Grau de Similaridade: %f (Próximo ou Menor que 0.0 significa que não compartilham quase nenhum sentido)\n", simRM)
 }

@@ -31,7 +31,7 @@ go run main.go
 
 * [x] **Fase 1:** Implementar o *Tokenizer* focado em RegEx (ignorando maiúsculas e modelando pontuações). *(Concluído)*
 * [x] **Fase 2:** Construir o primeiro modelo gerador básico na pasta `markov`. *(Concluído)*
-* [ ] **Fase 3:** Construir os vetores numéricos de similaridade na pasta `vectors`.
+* [x] **Fase 3:** Construir os vetores numéricos de similaridade na pasta `vectors`. *(Concluído)*
 * [ ] ... (A evoluir durante a construção)
 
 ---
@@ -91,4 +91,26 @@ A IA calculou esta matriz de sequência temporal:
 
 Tradução final repassada aos humanos (Decode):
 👉 "o rato ! o rato e do rei , o rato roeu a roupa do"
+```
+
+---
+
+### Fase 3: Vetores de Similaridade e Embeddings (Concluído)
+
+Deixamos o mundo isolado da Fase 1 para trás e entramos no campo contínuo das abstrações dimensionais (Álgebra Linear) no módulo `vectors/`. Num Large Language Model (LLM) da atualidade, é exatamente através deste módulo matemático que a IA entende os traços implícitos da linguagem humana sabendo sem você explicar, que "Filho" e "Ententeado" estão no campo parental.
+
+#### 📐 A Matemática dos Embeddings e o "Cosseno"
+* **Word Embeddings**: Diferente das Strings nativas ou ID's cegos, cada token na Fase 3 se transforma em um "Ponteiro Gráfico Multidimensional" (Array puro em `float64`). 
+* **Cosign Similarity (Similaridade do Cosseno)**: Implementamos o sagrado algorítmo por trás dos mecanismos de busca de vetores da atualidade. A matemática avalia a angulação escalar entre dois vetores. Se dois vetores (palavras) fluem na exata mesma direção semântica/contextual da frase, eles têm máxima similaridade (Perto de `1.0`). Se dão em ângulos obtusos ou opostos, variam para nulo (`0.0`) ou extremos paradoxos/antônimos (`-1.0`).
+
+**🤖 Exemplo Prático:**
+Simulamos a memória da I.A com as grandezas pré-assimiladas (como *Grau de Riqueza, Pertencimento na Realeza e Nível-Roedor*)... Comparando a angulação geométrica de palavras da base com a nossa fórmula construída do zero, ela prova os parentescos ideológicos com maestria!
+
+```text
+============ FASE 3: SIMILARIDADE SEMÂNTICA (VECTORES) ============
+Testando familiaridade semântica matemática entre 'Rei' 👑 e 'Rainha' 👸...
+>> Grau de Similaridade: 0.996928 (Próximo de 1.0 é extremo parentesco semântico!)
+
+Testando familiaridade semântica matemática entre 'Rei' 👑 e 'Rato' 🐭...
+>> Grau de Similaridade: 0.155694 (Próximo ou Menor que 0.0 significa que não compartilham quase nenhum sentido)
 ```
