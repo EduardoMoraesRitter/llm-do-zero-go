@@ -41,3 +41,19 @@ Criamos um sistema avançado de geração de vocabulário no pacote `tokenizer/`
 * **Fit (Treino)**: Aprende e varre os textos base, construindo um dicionário unificado (uma palavra = um ID `int`).
 * **Encode**: Traduz textos humanos para o modelo matriz matemático `[]int`. Palavras não vistas no treino são batizadas inteligentemente com `ID -1`.
 * **Decode**: Executa o reverso. Traduz a matriz lógica novamente para frases normais legíveis. Palavras desconhecidas na matriz que possuíam peso -1 se tornam `<UNK>` (Unknown).
+
+**🤖 Exemplo de Processamento:**
+```text
+=== 🚀 Testando o Tokenizer (Versão com Expressões Regulares) ===
+Texto de Treino:
+"O rato roeu a roupa do rei de Roma, mas não roeu o relógio!"
+
+Vocabulário gerado: 14 tokens únicos criados.
+
+--- Codificando Texto (Encode) ---
+Texto de Teste: "O rei, a rainha e a coroa!"
+Matriz gerada: [0 6 9 3 -1 -1 3 -1 13]
+
+--- Decodificando Texto (Decode) ---
+Resultado: "o rei , a <UNK> <UNK> a <UNK> !"
+```
